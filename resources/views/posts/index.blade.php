@@ -10,6 +10,7 @@
       @endforeach
     </div>
 
+    @if(Auth::check())
     <form method="POST" action="{{ route('posts.store') }}"  class="max-w-2xl mx-auto">
       @csrf
       <div class="block mb-2">
@@ -19,7 +20,11 @@
           name="title"
           placeholder="{{ __('Title') }}"
           class="w-full p-4">
+        @error('title')
+        <div class="text-red-500">{{ $message }}</div>
+        @enderror
       </div>
+
 
       <div class="block mb-2">
         <label for="content">Content</label>
@@ -28,12 +33,16 @@
             placeholder="{{ __('What\'s on your mind?') }}"
             class="w-full h-40 p-4"
         ></textarea>
+        @error('content')
+          <div class="text-red-500">{{ $message }}</div>
+        @enderror
       </div>
+
       
       <x-primary-button class="block">
         {{ __('Post') }}
       </x-primary-button>
     </form>
-        
+    @endif
   <div>
 </x-app-layout>  
