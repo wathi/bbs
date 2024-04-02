@@ -6,7 +6,7 @@
     </div>
     <div class="">
     @foreach ($postReplies as $postReply)
-    <div class="border-solid border-2 border-indigo-600 mb-2">
+    <div class="border-solid border-2 border-gray-300 mb-2 p-2">
       <div class="">{{$postReply->content}}</div>
       <div class="">{{$postReply->user_id}}</div>
     </div>
