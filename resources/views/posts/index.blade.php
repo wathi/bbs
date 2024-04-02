@@ -10,6 +10,8 @@
       @endforeach
     </div>
 
+    {{ $posts->links() }}
+
     @if(Auth::check())
     <form method="POST" action="{{ route('posts.store') }}"  class="max-w-2xl mx-auto">
       @csrf
