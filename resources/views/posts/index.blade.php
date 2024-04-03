@@ -5,7 +5,7 @@
       @foreach ($posts as $post)
 
       <a href="{{ route('posts.show', ['post' => $post]) }}"  class="p-4 border-solid border-2 border-gray-300">
-          <div class="text-gray-800">{{ $post->title }}</div>
+          <div class="text-gray-800">{{ Str::of($post->title)->limit(50) }}</div>
       </a>
       @endforeach
     </div>
