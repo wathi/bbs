@@ -45,7 +45,7 @@ class PostController extends Controller
         $post = new Post;
         $post->title = $request->title;
         $post->content = $request->content;
-        $post->user_id = 1;
+        $post->user_id = $request->user()->id;
         $post->likes = 0;
         $post->save();
  
@@ -63,7 +63,7 @@ class PostController extends Controller
 
         $postReply = new PostReply;
         $postReply->content = $request->content;
-        $postReply->user_id = 1;
+        $postReply->user_id = $request->user()->id;
         $postReply->post_id = $post->id;
         $postReply->likes = 0;
         $postReply->save();
