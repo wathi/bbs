@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Auth;
 
 
 class PostController extends Controller
@@ -47,7 +48,7 @@ class PostController extends Controller
         $post = new Post;
         $post->title = $request->title;
         $post->content = $request->content;
-        $post->user_id = $request->user()->id;
+        $post->user_id = Auth::id();
         $post->likes = 0;
         $post->save();
  
@@ -55,25 +56,6 @@ class PostController extends Controller
 
         // return redirect()->route('posts.index');
         return to_route('posts.show', ['post' => $post->id]);
-    }
-
-    public function storeReply(Request $request, Post $post): RedirectResponse
-    {   
-        $validated = $request->validate([
-            'content' => 'required',
-        ]);
-
-        $postReply = new PostReply;
-        $postReply->content = $request->content;
-        $postReply->user_id = $request->user()->id;
-        $postReply->post_id = $post->id;
-        $postReply->likes = 0;
-        $postReply->save();
-
-        // dd($request->all());
-        // dd($request->content, $post->id);
-
-        return redirect()->route('posts.show', $post->id);
     }
 
     /**
@@ -85,6 +67,25 @@ class PostController extends Controller
             'post' => Post::findOrFail($id),
             'postReplies' => Post::find($id)->postReply
         ]);
+    }
+
+    public function storeReply(Request $request, Post $post): RedirectResponse
+    {   
+        $validated = $request->validate([
+            'content' => 'required',
+        ]);
+
+        $postReply = new PostReply;
+        $postReply->content = $request->content;
+        $postReply->user_id = Auth::id();
+        $postReply->post_id = $post->id;
+        $postReply->likes = 0;
+        $postReply->save();
+
+        // dd($request->all());
+        // dd($request->content, $post->id);
+
+        return redirect()->route('posts.show', $post->id);
     }
 
     /**
