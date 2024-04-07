@@ -10,21 +10,14 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 
-
-class PostController extends Controller
+class PostReplyController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index()
     {
-        $posts = Post::paginate(20);
-        $users = User::all();
-
-        return view('posts.index', 
-            ['posts' => $posts],  ['users' => $users],
-        );
-
+        //
     }
 
     /**
@@ -32,41 +25,35 @@ class PostController extends Controller
      */
     public function create()
     {
-        //       
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
-    {   
+    public function store(Request $request, Post $post)
+    {
         $validated = $request->validate([
-            'title' => 'required|max:100',
             'content' => 'required',
         ]);
 
-        $post = new Post;
-        $post->title = $request->title;
-        $post->content = $request->content;
-        $post->user_id = Auth::id();
-        $post->likes = 0;
-        $post->save();
- 
-        return redirect()->route('posts.show', ['post' => $post->id]);
+        $postReply = new PostReply;
+        $postReply->content = $request->content;
+        $postReply->user_id = Auth::id();
+        $postReply->post_id = $post->id;
+        $postReply->likes = 0;
+        $postReply->save();
+
+        return redirect()->route('posts.show', $post->id);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id): View
+    public function show(string $id)
     {
-        return view('posts.show', [
-            'post' => Post::findOrFail($id),
-            'postReplies' => Post::find($id)->reply
-        ]);
+        //
     }
-
-
 
     /**
      * Show the form for editing the specified resource.
@@ -84,6 +71,8 @@ class PostController extends Controller
         //
     }
 
+    
+
     /**
      * Remove the specified resource from storage.
      */
@@ -92,4 +81,26 @@ class PostController extends Controller
         //
     }
 
+    public function like(Request $request, string $id)
+    {
+        // dd(Auth::user());
+
+        $user = Auth::user();
+        $user->postReplylike()->attach($id);
+        
+        $post_id = PostReply::find($id)->post_id;
+
+        return redirect()->route('posts.show', $post_id);
+    }
+
+    public function unlike(Request $request, string $id)
+    {
+        
+        $user = Auth::user();
+        $user->postReplylike()->detach($id);
+
+        $post_id = PostReply::find($id)->post_id;
+
+        return redirect()->route('posts.show', $post_id);
+    }
 }

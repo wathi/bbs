@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Post extends Model
 {
@@ -20,8 +21,13 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function postReply(): HasMany
+    public function reply(): HasMany
     {
         return $this->hasMany(PostReply::class);
+    }
+    
+    public function like(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class);
     }
 }

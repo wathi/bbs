@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\PostReplyController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -11,9 +12,25 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [PostController::class, 'index'])->name('home');
 
 Route::resource('posts', PostController::class)
-    ->only(['index', 'store', 'show', 'destroy']);
+    ->only(['index', 'store', 'show', 'edit', 'destroy']);
 
-Route::post('/posts/{post}/storeReply/', [PostController::class, 'storeReply'])->name('posts.storeReply');
+Route::resource('postreplies', PostReplyController::class)
+    ->only(['edit', 'destroy']);
+
+Route::post('/posts/{post}/storeReply/', [PostReplyController::class, 'store'])->middleware('auth')
+    ->name('posts.storeReply');
+
+Route::post('/posts/{post}/like/', [PostController::class, 'like'])->middleware('auth')
+    ->name('posts.like');   
+
+Route::post('/posts/{post}/unlike/', [PostController::class, 'unlike'])->middleware('auth')
+    ->name('posts.unlike');     
+
+Route::post('/postreplies/{postreply}/like/', [PostReplyController::class, 'like'])->middleware('auth')
+    ->name('postreplies.like'); 
+
+Route::post('/postreplies/{postreply}/unlike/', [PostReplyController::class, 'unlike'])->middleware('auth')
+    ->name('postreplies.unlike'); 
 
 Route::get('/dashboard', function () {
     return view('dashboard');
